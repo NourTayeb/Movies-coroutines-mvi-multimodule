@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Movies MVI</string>
+    <string name="app_name_splash">Movies MVI</string>
+    <string name="by_">By Nour Tayeb</string>
+    <string name="favorite">Favorite</string>
+    <string name="search">Search</string>
+    <string name="movie_title">Movie title</string>
+    <string name="error_add_to_fav">Error adding to favorite</string>
+    <string name="no_result_for_search">No result for your search</string>
+    <string name="your_favorite_is_empty">Your favorite is still empty</string>
+    <string name="some_error_occurred">Sorry, some error occurred!</string>
+    <string name="authorization_failed">Authorization failed!</string>
+    <string name="favorite_state_changed">Favorite changed</string>
+</resources>
