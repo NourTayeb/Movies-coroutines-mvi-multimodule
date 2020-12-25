@@ -1,9 +1,10 @@
 package com.nourtayeb.movies_mvi.presentation.ui.favorite
 
 import androidx.lifecycle.Observer
+import com.nourtayeb.ads.domain.usecase.ShowImageAdsUseCase
 import com.nourtayeb.movies_mvi.common.base.ViewModelBaseTest
 import com.nourtayeb.movies_mvi.common.dummyMovies
-import com.nourtayeb.movies_mvi.data.network.UseCaseResult
+import com.nourtayeb.movies_mvi.domain.UseCaseResult
 import com.nourtayeb.movies_mvi.domain.usecase.AddToFavoriteUseCase
 import com.nourtayeb.movies_mvi.domain.usecase.GetFavoriteUseCase
 import io.mockk.coEvery
@@ -20,12 +21,20 @@ class FavoriteViewModelTest : ViewModelBaseTest() {
     @RelaxedMockK
     lateinit var addToFavoriteUseCase: AddToFavoriteUseCase
 
+    @RelaxedMockK
+    lateinit var showImageAdsUseCase: ShowImageAdsUseCase
+
 
     lateinit var viewModel: FavoriteViewModel
 
     @Before
     fun init() {
-        viewModel = FavoriteViewModel(testDispatcher, getFavoriteUseCase, addToFavoriteUseCase)
+        viewModel = FavoriteViewModel(
+            testDispatcher,
+            getFavoriteUseCase,
+            addToFavoriteUseCase,
+            showImageAdsUseCase
+        )
     }
 
     @Test
@@ -34,9 +43,9 @@ class FavoriteViewModelTest : ViewModelBaseTest() {
         coEvery { getFavoriteUseCase.buildUseCase() } returns UseCaseResult.Success(
             dummyMovies
         )
-        val liveData = viewModel.performAction(FavoriteMoviesUiAction.LoadFavorite)
+        viewModel.performAction(FavoriteMoviesUiAction.LoadFavorite)
         val list = mutableListOf<FavoriteMoviesUiState>()
-        liveData.observe(lifecycleOwner, Observer {
+        viewModel.state.observe(lifecycleOwner, Observer {
             list.add(it)
             if (list.size == 2) {
                 Assert.assertEquals(
@@ -48,7 +57,7 @@ class FavoriteViewModelTest : ViewModelBaseTest() {
                 )
             }
         })
-        Assert.assertEquals(list.size,2)
+        Assert.assertEquals(list.size, 2)
     }
 
     @Test
@@ -57,8 +66,8 @@ class FavoriteViewModelTest : ViewModelBaseTest() {
         coEvery { getFavoriteUseCase.buildUseCase() } returns UseCaseResult.Success(
             dummyMovies
         )
-        val liveData = viewModel.performAction(FavoriteMoviesUiAction.LoadFavorite)
-        liveData.observe(lifecycleOwner, Observer {
+        viewModel.performAction(FavoriteMoviesUiAction.LoadFavorite)
+        viewModel.state.observe(lifecycleOwner, Observer {
             Assert.assertFalse(it is FavoriteMoviesUiState.Failed)
         })
     }
@@ -67,9 +76,9 @@ class FavoriteViewModelTest : ViewModelBaseTest() {
     fun `failed getFavorite returns Loading then Failed LoadFavorite`() {
         val failure = ""
         coEvery { getFavoriteUseCase.buildUseCase() } returns UseCaseResult.Failed()
-        val liveData = viewModel.performAction(FavoriteMoviesUiAction.LoadFavorite)
+        viewModel.performAction(FavoriteMoviesUiAction.LoadFavorite)
         val list = mutableListOf<FavoriteMoviesUiState>()
-        liveData.observe(lifecycleOwner, Observer {
+        viewModel.state.observe(lifecycleOwner, Observer {
             list.add(it)
             if (list.size == 2) {
                 Assert.assertEquals(
@@ -81,15 +90,15 @@ class FavoriteViewModelTest : ViewModelBaseTest() {
                 )
             }
         })
-        Assert.assertEquals(list.size,2)
+        Assert.assertEquals(list.size, 2)
     }
 
     @Test
     fun `failed getFavorite doesnt return FavoriteLoaded`() {
 
         coEvery { getFavoriteUseCase.buildUseCase() } returns UseCaseResult.Failed()
-        val liveData = viewModel.performAction(FavoriteMoviesUiAction.LoadFavorite)
-        liveData.observe(lifecycleOwner, Observer {
+        viewModel.performAction(FavoriteMoviesUiAction.LoadFavorite)
+        viewModel.state.observe(lifecycleOwner, Observer {
             Assert.assertFalse(it is FavoriteMoviesUiState.FavoriteLoaded)
         })
     }
@@ -100,9 +109,9 @@ class FavoriteViewModelTest : ViewModelBaseTest() {
         val isFav = true
         val id = 3
         coEvery { addToFavoriteUseCase.buildUseCase(isFav, id) } returns UseCaseResult.Success(true)
-        val liveData = viewModel.performAction(FavoriteMoviesUiAction.AddToFav(isFav, id))
+        viewModel.performAction(FavoriteMoviesUiAction.AddToFav(isFav, id))
         val list = mutableListOf<FavoriteMoviesUiState>()
-        liveData.observe(lifecycleOwner, Observer {
+        viewModel.state.observe(lifecycleOwner, Observer {
             list.add(it)
             if (list.size == 2) {
                 Assert.assertEquals(
@@ -114,7 +123,7 @@ class FavoriteViewModelTest : ViewModelBaseTest() {
                 )
             }
         })
-        Assert.assertEquals(list.size,2)
+        Assert.assertEquals(list.size, 2)
     }
 
 
@@ -126,9 +135,9 @@ class FavoriteViewModelTest : ViewModelBaseTest() {
         coEvery { addToFavoriteUseCase.buildUseCase(isFav, id) } returns UseCaseResult.Failed(
             failure
         )
-        val liveData = viewModel.performAction(FavoriteMoviesUiAction.AddToFav(isFav, id))
+        viewModel.performAction(FavoriteMoviesUiAction.AddToFav(isFav, id))
         val list = mutableListOf<FavoriteMoviesUiState>()
-        liveData.observe(lifecycleOwner, Observer {
+        viewModel.state.observe(lifecycleOwner, Observer {
             list.add(it)
             if (list.size == 2) {
                 Assert.assertEquals(
@@ -140,7 +149,7 @@ class FavoriteViewModelTest : ViewModelBaseTest() {
                 )
             }
         })
-        Assert.assertEquals(list.size,2)
+        Assert.assertEquals(list.size, 2)
     }
 
     @Test
@@ -148,8 +157,8 @@ class FavoriteViewModelTest : ViewModelBaseTest() {
         val isFav = true
         val id = 3
         coEvery { addToFavoriteUseCase.buildUseCase(isFav, id) } returns UseCaseResult.Success(true)
-        val liveData = viewModel.performAction(FavoriteMoviesUiAction.AddToFav(isFav, id))
-        liveData.observe(lifecycleOwner, Observer {
+        viewModel.performAction(FavoriteMoviesUiAction.AddToFav(isFav, id))
+        viewModel.state.observe(lifecycleOwner, Observer {
             Assert.assertFalse(it is FavoriteMoviesUiState.Failed)
         })
     }
@@ -162,10 +171,19 @@ class FavoriteViewModelTest : ViewModelBaseTest() {
         coEvery { addToFavoriteUseCase.buildUseCase(isFav, id) } returns UseCaseResult.Failed(
             failure
         )
-        val liveData = viewModel.performAction(FavoriteMoviesUiAction.AddToFav(isFav, id))
-        liveData.observe(lifecycleOwner, Observer {
+        viewModel.performAction(FavoriteMoviesUiAction.AddToFav(isFav, id))
+        viewModel.state.observe(lifecycleOwner, Observer {
             Assert.assertFalse(it is FavoriteMoviesUiState.AddedToFavorite)
         })
     }
 
+
+//    @Test
+//    fun `ShowAdds return AdLoaded every three seconds`() {
+//        coEvery { showAdsUseCase.buildUseCase() } returns
+//        viewModel.performAction(FavoriteMoviesUiAction.AddToFav(isFav, id))
+//        viewModel.state.observe(lifecycleOwner, Observer {
+//            Assert.assertFalse(it is FavoriteMoviesUiState.AddedToFavorite)
+//        })
+//    }
 }

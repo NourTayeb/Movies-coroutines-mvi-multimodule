@@ -5,8 +5,6 @@ abstract class BaseRecyclerViewAdapter <DomainEntity,VH:RecyclerView.ViewHolder>
 
     var onItemClick:(Any)->Unit ={}
 
-
-
     val list:MutableList<DomainEntity> = mutableListOf()
 
     override fun getItemCount(): Int {

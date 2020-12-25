@@ -1,10 +1,10 @@
 package com.nourtayeb.movies_mvi.domain.usecase
 
 
-import com.nourtayeb.movies_mvi.data.network.UseCaseResult
+import com.nourtayeb.movies_mvi.domain.UseCaseResult
 import com.nourtayeb.movies_mvi.domain.entity.Movie
-import com.nourtayeb.movies_mvi.domain.repository.MoviesRepository
-import com.nourtayeb.movies_mvi.domain.repository.UserRepository
+import com.nourtayeb.movies_mvi.data.repository.MoviesRepository
+import com.nourtayeb.movies_mvi.data.repository.UserRepository
 
 import javax.inject.Inject
 

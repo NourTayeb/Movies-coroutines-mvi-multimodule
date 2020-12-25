@@ -3,7 +3,7 @@ package com.nourtayeb.movies_mvi.presentation.ui.searchmovies
 import androidx.lifecycle.Observer
 import com.nourtayeb.movies_mvi.common.base.ViewModelBaseTest
 import com.nourtayeb.movies_mvi.common.dummyMovies
-import com.nourtayeb.movies_mvi.data.network.UseCaseResult
+import com.nourtayeb.movies_mvi.domain.UseCaseResult
 import com.nourtayeb.movies_mvi.domain.usecase.AddToFavoriteUseCase
 import com.nourtayeb.movies_mvi.domain.usecase.SearchMovieUseCase
 import io.mockk.*
@@ -43,9 +43,9 @@ class SearchMovieViewModelTest : ViewModelBaseTest() {
         coEvery { searchMovieUseCase.buildUseCase(key, fromRemote) } returns UseCaseResult.Success(
             dummyMovies
         )
-        val liveData = viewModel.performAction(SearchMoviesUiAction.Search(key, fromRemote))
+        viewModel.performAction(SearchMoviesUiAction.Search(key, fromRemote))
         val list = mutableListOf<SearchMoviesUiState>()
-        liveData.observe(lifecycleOwner, Observer {
+        viewModel.state.observe(lifecycleOwner, Observer {
             list.add(it)
             if (list.size == 2) {
                 assertEquals(
@@ -67,8 +67,8 @@ class SearchMovieViewModelTest : ViewModelBaseTest() {
         coEvery { searchMovieUseCase.buildUseCase(key, fromRemote) } returns UseCaseResult.Success(
             dummyMovies
         )
-        val liveData = viewModel.performAction(SearchMoviesUiAction.Search(key, fromRemote))
-        liveData.observe(lifecycleOwner, Observer {
+        viewModel.performAction(SearchMoviesUiAction.Search(key, fromRemote))
+        viewModel.state.observe(lifecycleOwner, Observer {
             assertFalse(it is SearchMoviesUiState.Failed)
         })
     }
@@ -79,9 +79,9 @@ class SearchMovieViewModelTest : ViewModelBaseTest() {
         val failure = "Search"
         val fromRemote = false
         coEvery { searchMovieUseCase.buildUseCase(key, fromRemote) } returns UseCaseResult.Failed()
-        val liveData = viewModel.performAction(SearchMoviesUiAction.Search(key, fromRemote))
+        viewModel.performAction(SearchMoviesUiAction.Search(key, fromRemote))
         val list = mutableListOf<SearchMoviesUiState>()
-        liveData.observe(lifecycleOwner, Observer {
+        viewModel.state.observe(lifecycleOwner, Observer {
             list.add(it)
             if (list.size == 2) {
                 assertEquals(
@@ -101,8 +101,8 @@ class SearchMovieViewModelTest : ViewModelBaseTest() {
         val key = "mile"
         val fromRemote = false
         coEvery { searchMovieUseCase.buildUseCase(key, fromRemote) } returns UseCaseResult.Failed()
-        val liveData = viewModel.performAction(SearchMoviesUiAction.Search(key, fromRemote))
-        liveData.observe(lifecycleOwner, Observer {
+        viewModel.performAction(SearchMoviesUiAction.Search(key, fromRemote))
+        viewModel.state.observe(lifecycleOwner, Observer {
             assertFalse(it is SearchMoviesUiState.Searched)
         })
     }
@@ -113,9 +113,9 @@ class SearchMovieViewModelTest : ViewModelBaseTest() {
         val isFav = true
         val id = 3
         coEvery { addToFavoriteUseCase.buildUseCase(isFav, id) } returns UseCaseResult.Success(true)
-        val liveData = viewModel.performAction(SearchMoviesUiAction.AddToFav(isFav, id))
+        viewModel.performAction(SearchMoviesUiAction.AddToFav(isFav, id))
         val list = mutableListOf<SearchMoviesUiState>()
-        liveData.observe(lifecycleOwner, Observer {
+        viewModel.state.observe(lifecycleOwner, Observer {
             list.add(it)
             if (list.size == 2) {
                 assertEquals(
@@ -139,9 +139,9 @@ class SearchMovieViewModelTest : ViewModelBaseTest() {
         coEvery { addToFavoriteUseCase.buildUseCase(isFav, id) } returns UseCaseResult.Failed(
             failure
         )
-        val liveData = viewModel.performAction(SearchMoviesUiAction.AddToFav(isFav, id))
+        viewModel.performAction(SearchMoviesUiAction.AddToFav(isFav, id))
         val list = mutableListOf<SearchMoviesUiState>()
-        liveData.observe(lifecycleOwner, Observer {
+        viewModel.state.observe(lifecycleOwner, Observer {
             list.add(it)
             if (list.size == 2) {
                 assertEquals(
@@ -161,8 +161,8 @@ class SearchMovieViewModelTest : ViewModelBaseTest() {
         val isFav = true
         val id = 3
         coEvery { addToFavoriteUseCase.buildUseCase(isFav, id) } returns UseCaseResult.Success(true)
-        val liveData = viewModel.performAction(SearchMoviesUiAction.AddToFav(isFav, id))
-        liveData.observe(lifecycleOwner, Observer {
+        viewModel.performAction(SearchMoviesUiAction.AddToFav(isFav, id))
+        viewModel.state.observe(lifecycleOwner, Observer {
             assertFalse(it is SearchMoviesUiState.Failed)
         })
     }
@@ -175,8 +175,8 @@ class SearchMovieViewModelTest : ViewModelBaseTest() {
         coEvery { addToFavoriteUseCase.buildUseCase(isFav, id) } returns UseCaseResult.Failed(
             failure
         )
-        val liveData = viewModel.performAction(SearchMoviesUiAction.AddToFav(isFav, id))
-        liveData.observe(lifecycleOwner, Observer {
+        viewModel.performAction(SearchMoviesUiAction.AddToFav(isFav, id))
+        viewModel.state.observe(lifecycleOwner, Observer {
             assertFalse(it is SearchMoviesUiState.AddedToFavorite)
         })
     }

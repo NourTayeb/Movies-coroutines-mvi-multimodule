@@ -1,6 +1,6 @@
 package com.nourtayeb.movies_mvi.domain.usecase
 
-import com.nourtayeb.movies_mvi.domain.repository.MoviesRepository
+import com.nourtayeb.movies_mvi.data.repository.MoviesRepository
 import io.mockk.impl.annotations.MockK
 
 class SearchMovieUseCaseTest {

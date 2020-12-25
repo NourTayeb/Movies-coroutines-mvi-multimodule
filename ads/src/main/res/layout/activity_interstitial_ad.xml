@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".presentation.ui.interstitial.InterstitialAdActivity">
+
+    <LinearLayout
+        android:id="@+id/loadContainer"
+        android:orientation="horizontal"
+        android:layout_toEndOf="@+id/close"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/loadImageAds"
+            android:text="load Image ads"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <Button
+            android:id="@+id/loadTextAds"
+            android:text="load Text ads"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+    <TextView
+        android:id="@+id/textAd"
+        android:layout_marginTop="10dp"
+        android:textSize="19sp"
+        android:layout_below="@id/loadContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <ProgressBar
+        android:layout_centerInParent="true"
+        android:id="@+id/loading"
+        android:visibility="gone"
+        android:layout_width="30dp"
+        android:layout_height="30dp"/>
+    <ImageView
+        android:layout_below="@id/textAd"
+        android:id="@+id/image"
+        android:scaleType="centerCrop"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+    <ImageView
+        android:id="@+id/close"
+        android:layout_margin="10dp"
+        android:layout_width="40dp"
+        android:src="@drawable/close"
+        android:layout_height="40dp"/>
+
+</RelativeLayout>

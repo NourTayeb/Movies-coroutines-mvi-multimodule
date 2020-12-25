@@ -2,7 +2,7 @@ package com.nourtayeb.movies_mvi.presentation.ui.splash
 
 import androidx.lifecycle.Observer
 import com.nourtayeb.movies_mvi.common.base.ViewModelBaseTest
-import com.nourtayeb.movies_mvi.data.network.UseCaseResult
+import com.nourtayeb.movies_mvi.domain.UseCaseResult
 import com.nourtayeb.movies_mvi.domain.entity.User
 import com.nourtayeb.movies_mvi.domain.usecase.LoginUseCase
 import io.mockk.coEvery
@@ -28,9 +28,9 @@ class SplashViewModelTest :ViewModelBaseTest(){
     fun `success login returns Loading then SuccessUiState` (){
         val userId =1
         coEvery { loginUseCase.buildUseCase(User(userId)) } returns UseCaseResult.Success()
-        val liveData = viewModel.performAction(SplashUiAction.Login(userId))
+         viewModel.performAction(SplashUiAction.Login(userId))
         val list= mutableListOf<SplashMoviesUiState>()
-        liveData.observe(lifecycleOwner,Observer{
+        viewModel.state.observe(lifecycleOwner,Observer{
             list.add(it)
             if (list.size ==2){
                 Assert.assertEquals(
@@ -45,9 +45,9 @@ class SplashViewModelTest :ViewModelBaseTest(){
     fun `failed login returns Loading then FailedUiState` (){
         val userId =1
         coEvery { loginUseCase.buildUseCase(User(userId)) } returns UseCaseResult.Failed()
-        val liveData = viewModel.performAction(SplashUiAction.Login(userId))
+        viewModel.performAction(SplashUiAction.Login(userId))
         val list= mutableListOf<SplashMoviesUiState>()
-        liveData.observe(lifecycleOwner,Observer{
+        viewModel.state.observe(lifecycleOwner,Observer{
             list.add(it)
             if (list.size ==2){
                 Assert.assertEquals(
@@ -62,8 +62,8 @@ class SplashViewModelTest :ViewModelBaseTest(){
     fun `success login doesnt return FailedUiState` (){
         val userId =1
         coEvery { loginUseCase.buildUseCase(User(userId)) } returns UseCaseResult.Success()
-        val liveData = viewModel.performAction(SplashUiAction.Login(userId))
-        liveData.observe(lifecycleOwner,Observer{
+        viewModel.performAction(SplashUiAction.Login(userId))
+        viewModel.state.observe(lifecycleOwner,Observer{
             Assert.assertFalse(it is SplashMoviesUiState.Failed)
         })
     }
@@ -71,8 +71,8 @@ class SplashViewModelTest :ViewModelBaseTest(){
     fun `failed login doesnt return SuccessUiState` (){
         val userId =1
         coEvery { loginUseCase.buildUseCase(User(userId)) } returns UseCaseResult.Failed()
-        val liveData = viewModel.performAction(SplashUiAction.Login(userId))
-        liveData.observe(lifecycleOwner,Observer{
+        viewModel.performAction(SplashUiAction.Login(userId))
+        viewModel.state.observe(lifecycleOwner,Observer{
             Assert.assertFalse(it is SplashMoviesUiState.Success)
         })
     }

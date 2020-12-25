@@ -7,6 +7,7 @@ import android.net.Uri
 import android.provider.MediaStore
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionDeniedResponse
@@ -31,6 +32,35 @@ fun AppCompatActivity.shareBitmap(it: Bitmap) {
             override fun onPermissionGranted(response: PermissionGrantedResponse) { /* ... */
                 val bitmapPath: String =
                     MediaStore.Images.Media.insertImage(contentResolver, it, "title", "Share image")
+                val bitmapUri: Uri = Uri.parse(bitmapPath)
+
+                val intent = Intent(Intent.ACTION_SEND)
+                intent.type = "image/png"
+                intent.putExtra(Intent.EXTRA_STREAM, bitmapUri)
+                startActivity(Intent.createChooser(intent, "Share"))
+            }
+
+            override fun onPermissionDenied(response: PermissionDeniedResponse) { /* ... */
+
+            }
+
+            override fun onPermissionRationaleShouldBeShown(
+                permission: PermissionRequest?,
+                token: PermissionToken?
+            ) { /* ... */
+            }
+        }).check()
+
+
+
+
+}fun Fragment.shareBitmap(it: Bitmap) {
+    Dexter.withContext(context)
+        .withPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        .withListener(object : PermissionListener {
+            override fun onPermissionGranted(response: PermissionGrantedResponse) { /* ... */
+                val bitmapPath: String =
+                    MediaStore.Images.Media.insertImage(requireActivity().contentResolver, it, "title", "Share image")
                 val bitmapUri: Uri = Uri.parse(bitmapPath)
 
                 val intent = Intent(Intent.ACTION_SEND)

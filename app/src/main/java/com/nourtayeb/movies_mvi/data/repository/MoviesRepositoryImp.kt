@@ -1,22 +1,30 @@
 package com.nourtayeb.movies_mvi.data.repository
 
 import com.nourtayeb.movies_mvi.common.config.TMDB_API_KEY
+import com.nourtayeb.movies_mvi.data.local.db.AppDatabase
 import com.nourtayeb.movies_mvi.data.local.db.MoviesDao
 import com.nourtayeb.movies_mvi.data.local.db.UserDao
 import com.nourtayeb.movies_mvi.data.local.db.entities.UserMovie
 import com.nourtayeb.movies_mvi.data.mapper.MovieMapper
 import com.nourtayeb.movies_mvi.data.network.ApiService
 import com.nourtayeb.movies_mvi.domain.entity.Movie
-import com.nourtayeb.movies_mvi.domain.repository.MoviesRepository
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 class MoviesRepositoryImp
-@Inject constructor(private val apiService: ApiService,val mapper: MovieMapper,val moviesDao: MoviesDao,val userDao: UserDao):MoviesRepository {
-    override suspend fun searchMovies(key: String,fromRemote: Boolean,userId:Int): List<Movie> {
+@Inject constructor(private val apiService: ApiService,val mapper: MovieMapper,val moviesDao: MoviesDao,val userDao: UserDao):
+    MoviesRepository {
+
+    @Inject
+    lateinit var AppDatabase: AppDatabase
+   
+    override suspend fun searchMovies(key: String,fromRemote: Boolean,userId:Int): List<Movie> = coroutineScope  {
         if(fromRemote){
-            val apiResult = apiService.searchMovie(TMDB_API_KEY ,key).results
+            val apiResultDeferred = async { apiService.searchMovie(TMDB_API_KEY ,key) }//.results
+            val userMoviesDeferred =  async { userDao.getUserMovies(userId) }
+            val apiResult = apiResultDeferred.await().results
+            val userMovies = userMoviesDeferred.await()
             moviesDao.insertMovies(apiResult.map { mapper.RetrofitToRoom(it) })
-            val userMovies = userDao.getUserMovies(userId)
             val returnedDomain = apiResult.map { mapper.RetrofitToDomain(it) }
             if(!userMovies.isEmpty()){
                 val favorite = userMovies[0].movies.map { it.id }.toSet()
@@ -24,13 +32,14 @@ class MoviesRepositoryImp
                     it.isFav = favorite.contains(it.id)
                 }
             }
-            return returnedDomain
+             returnedDomain
         }else{
-            return moviesDao.search("%"+key+"%").map { mapper.RoomToDomain(it) }
+             moviesDao.search("%"+key+"%").map { mapper.RoomToDomain(it) }
         }
     }
 
     override suspend fun toggleFavorite(isFav: Boolean, id: Int, userId:Int): Boolean {
+        delay(1000)
         if(isFav){
             return moviesDao.addToFavorite(UserMovie(userId,id))!= 0L
         }else{

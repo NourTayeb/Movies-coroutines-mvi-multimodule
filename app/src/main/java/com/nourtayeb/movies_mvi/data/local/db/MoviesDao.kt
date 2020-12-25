@@ -7,6 +7,9 @@ import com.nourtayeb.movies_mvi.data.local.db.entities.UserMovie
 
 @Dao
 interface MoviesDao {
+    @Query("SELECT * FROM Movie")
+    suspend fun getMovies() : List<MovieLocal>
+
     @Query("SELECT * FROM Movie where title LIKE :key")
     suspend fun search(key: String): List<MovieLocal>
 
@@ -25,7 +28,5 @@ interface MoviesDao {
     @Query("DELETE FROM UserMovie WHERE userId = :userid and movieId = :movieId")
     fun removeFromFavorite(userid:Int,movieId:Int):Int
 
-    @Query("SELECT * FROM Movie")
-    suspend fun getMovies() : List<MovieLocal>
 
 }

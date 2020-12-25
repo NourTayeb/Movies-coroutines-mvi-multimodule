@@ -14,5 +14,5 @@ object CoroutinesDispatcherModule {
 
     @Provides
     @Singleton
-    fun CoroutineDispatcher() :CoroutineDispatcher = Dispatchers.Main
+    fun CoroutineDispatcher() :CoroutineDispatcher = Dispatchers.IO
 }

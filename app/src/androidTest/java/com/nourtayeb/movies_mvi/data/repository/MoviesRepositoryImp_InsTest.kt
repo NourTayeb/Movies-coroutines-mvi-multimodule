@@ -1,14 +1,17 @@
 package com.nourtayeb.movies_mvi.data.repository
 
+import com.nourtayeb.movies_mvi.common.di.LocaleStorageModule
 import com.nourtayeb.movies_mvi.common.dumMovie
 import com.nourtayeb.movies_mvi.common.dumUser
 import com.nourtayeb.movies_mvi.common.movies1999
+import com.nourtayeb.movies_mvi.data.local.db.AppDatabase
 import com.nourtayeb.movies_mvi.data.local.db.MoviesDao
 import com.nourtayeb.movies_mvi.data.local.db.UserDao
 import com.nourtayeb.movies_mvi.data.mapper.MovieMapper
 import com.nourtayeb.movies_mvi.data.network.ApiService
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Before
@@ -24,6 +27,7 @@ class MoviesRepositoryImp_InsTest {
 
     @Inject
     lateinit var userRepositoryImp: UserRepositoryImp
+
 
     @get:Rule
     var hiltRule = HiltAndroidRule(this)
@@ -74,16 +78,6 @@ class MoviesRepositoryImp_InsTest {
             val userId = 3
             val retrievedMovies = moviesRepositoryImp.searchMovies(key,fromRemote,userId)
             Assert.assertFalse(retrievedMovies.isEmpty())
-        }
-    }
-    @Test
-    fun `searchMovies_fromRemote_for_spaceString_should_return_nonempty_result`(){
-        runBlocking {
-            val key = " "
-            val fromRemote = true
-            val userId = 3
-            val retrievedMovies = moviesRepositoryImp.searchMovies(key,fromRemote,userId)
-            Assert.assertTrue(retrievedMovies.isEmpty())
         }
     }
     @Test

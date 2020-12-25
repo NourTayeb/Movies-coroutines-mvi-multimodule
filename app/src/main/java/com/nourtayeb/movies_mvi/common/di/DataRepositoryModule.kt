@@ -7,8 +7,8 @@ import com.nourtayeb.movies_mvi.data.mapper.UserMapper
 import com.nourtayeb.movies_mvi.data.network.ApiService
 import com.nourtayeb.movies_mvi.data.repository.MoviesRepositoryImp
 import com.nourtayeb.movies_mvi.data.repository.UserRepositoryImp
-import com.nourtayeb.movies_mvi.domain.repository.MoviesRepository
-import com.nourtayeb.movies_mvi.domain.repository.UserRepository
+import com.nourtayeb.movies_mvi.data.repository.MoviesRepository
+import com.nourtayeb.movies_mvi.data.repository.UserRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
